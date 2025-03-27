@@ -1,6 +1,8 @@
 import ResturantCard from "./ResturantCard ";
 import { useState,useEffect } from "react";
+import { Link } from "react-router";
 import Shimmers from "./Shimmers";
+import useOnlineStatus from "../utils/useOnlineStatus";
 
 const Body = () => {
 
@@ -22,9 +24,9 @@ const Body = () => {
         
            
             //optional chaining
-            setrestaurantList(json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+            setrestaurantList(json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
 
-            setfilter_restuarent(json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+            setfilter_restuarent(json?.data?.cards[1]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
            
         };
 
@@ -33,20 +35,28 @@ const Body = () => {
         return <Shimmers/>
     }*/  
 
+    const onlineStatus = useOnlineStatus();
+
+    if(onlineStatus === false){
+        return(
+            <h1>you are offline plz check your internet connection......</h1>
+        );
+    }
+
     return restaurantList.length === 0 ?  (<Shimmers/>): (
 
      
-        <div className="body">
-            <div className="filter">
-                <div className="search">
+        <div className="body ">
+            <div className="filter flex">
+                <div className="search m-4 p-4">
                     <input 
                     type = "text"
-                    className="search-box"
+                    className="search-box border border-solid border-black bg-blue-50"
                     value={searchText}
                     onChange={(e)=>{
                         setsearchText(e.target.value);
                     }}/>
-                    <button
+                    <button className="m-4 px-4 py-2 bg-green-100 rounded-lg"
                     onClick={()=>{
                         //filter the restuarent card and update the ui
                         //searchgtect
@@ -56,8 +66,8 @@ const Body = () => {
                     }}
                     >search</button>
                 </div>
-                
-              <button className="filter-btn" 
+            <div className="flex items-center" >
+            <button className="filter-btn m-4 px-4 py-2 bg-gray-200 rounded-lg" 
               onClick={ () => {
                   const filterlist =  restaurantList.filter(
                     (res) => res.info.avgRating > 4.2
@@ -68,16 +78,22 @@ const Body = () => {
               }
             }
             >TOP RATED RESTAURANT</button>
+
+            </div>
+              
             </div>
             
 
-            <div className="res-container">
+            <div className="flex flex-wrap">
                 {
                     filter_restuarent.map((restaurant)=> (
+                        <Link key={restaurant.info.id} to ={"/restaurants/"+restaurant.info.id}>
+                       
                         < ResturantCard
-                          key={restaurant.info.id}
+                       
                           resData={restaurant}
                         />
+                         </Link>
                       ))
 
                 }

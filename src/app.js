@@ -1,4 +1,5 @@
 import React from "react";
+import { lazy,Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router";
 import Header from "./components/Header";
@@ -7,6 +8,12 @@ import About from "./components/About";
 import Contact from "./components/Contact";
 import Res_menu from "./components/Res_menu";
 import Error from "./components/Error";
+
+
+// chunking , code spliting , dynamic loading , on demand loading,lazy loading,dynaimc impotr
+
+
+const Grocery = lazy(()=> import("./components/Grocery"));
 
 // Layout component
 const AppLayout = () => {
@@ -28,7 +35,9 @@ const router = createBrowserRouter([
             { path: "/", element: <Body /> },
             { path: "about", element: <About /> },
             { path: "contact", element: <Contact /> },
-            { path:"restaurant/:resId", element: <Res_menu/>},
+            { path:"grocery", element:<Suspense fallback = {<h1>loading....</h1>}>
+                <Grocery/></Suspense>},
+            { path:"restaurants/:resId", element: <Res_menu/>},
         ],
         errorElement: <Error />, 
     },
