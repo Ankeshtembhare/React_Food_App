@@ -1,15 +1,16 @@
 import ResturantCard from "./ResturantCard ";
-import { useState,useEffect } from "react";
+import { useState,useEffect, useContext} from "react";
 import { Link } from "react-router";
 import Shimmers from "./Shimmers";
 import useOnlineStatus from "../utils/useOnlineStatus";
+import UserContext from "../utils/UserContext";
 
 const Body = () => {
 
     const [restaurantList,setrestaurantList] = useState([]); 
     const [filter_restuarent,setfilter_restuarent] = useState([]);
 
-    const[searchText,setsearchText] =useState("");
+    const [searchText,setsearchText] =useState("");
 
     useEffect(() => {
             fetchData();
@@ -43,10 +44,12 @@ const Body = () => {
         );
     }
 
+    const {loggedInUser,setuserName} = useContext(UserContext);
+
     return restaurantList.length === 0 ?  (<Shimmers/>): (
 
      
-        <div className="body ">
+        <div className="body overflow-x-hidden">
             <div className="filter flex">
                 <div className="search m-4 p-4">
                     <input 
@@ -79,6 +82,13 @@ const Body = () => {
             }
             >TOP RATED RESTAURANT</button>
 
+            </div>
+
+            <div className="m-4 p-4 flex items-center">
+                <label>UserName : </label>
+                <input className="border border-black p-2"
+                value={loggedInUser}
+                onChange={(e)=> setuserName(e.target.value)}/>
             </div>
               
             </div>

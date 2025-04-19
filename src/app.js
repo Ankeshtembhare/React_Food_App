@@ -6,8 +6,13 @@ import Header from "./components/Header";
 import Body from "./components/Body";
 import About from "./components/About";
 import Contact from "./components/Contact";
-import Res_menu from "./components/Res_menu";
+import ResMenu from "./components/ResMenu";
 import Error from "./components/Error";
+import { useState,useEffect} from "react";
+import UserContext from "./utils/UserContext";
+import { Provider } from "react-redux";
+import appStore from "./utils/appStore";
+import Cart from "./components/Cart";
 
 
 // chunking , code spliting , dynamic loading , on demand loading,lazy loading,dynaimc impotr
@@ -15,13 +20,31 @@ import Error from "./components/Error";
 
 const Grocery = lazy(()=> import("./components/Grocery"));
 
+
+
+
 // Layout component
 const AppLayout = () => {
+    const [userName,setuserName] =useState();
+
+useEffect(()=>{
+    const data = {
+     name : "ankesh",
+    };
+
+    setuserName(data.name);
+},[])
     return (
-        <div className="app">
-            <Header />
-            <Outlet /> {/* This will render child routes */}
-        </div>
+        <Provider store={appStore }>
+             <UserContext.Provider value={{LoggedInUser:userName,setuserName }}>
+                <div className="app">
+                <Header />
+                <Outlet /> {/* This will render child routes */}
+                </div>
+            </UserContext.Provider>
+        </Provider>
+       
+       
     );
 };
 
@@ -37,7 +60,9 @@ const router = createBrowserRouter([
             { path: "contact", element: <Contact /> },
             { path:"grocery", element:<Suspense fallback = {<h1>loading....</h1>}>
                 <Grocery/></Suspense>},
-            { path:"restaurants/:resId", element: <Res_menu/>},
+            { path:"restaurants/:resId", element: <ResMenu/>},
+            {
+               path:"/cart", element:<Cart/> },
         ],
         errorElement: <Error />, 
     },
